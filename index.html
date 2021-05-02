@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Table Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .fix {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .fix .relative {
+            position: relative;
+        }
+
+        .rel {
+            position: relative;
+            width: 2000px;
+        }
+        .pushBack{
+            margin-left: auto;
+            margin-right: auto;
+            table-layout: fixed;
+            border-collapse: collapse;
+            z-index: -1;
+            position:relative;
+            z-index: -100;
+        }
+    </style>
+</head>
+
+<body id="body" style="margin: 20px;" onload="myFunction()">
+    <center id="button"><button onclick="myFunction()" style="margin: 300px;" type="button" class="btn btn-info">Reload
+            page, copy table's HTML format from DNAC Studio. Paste it in the prompt. </button>
+    </center>
+    <div class="fix">
+        <div class="relative">
+            <table border=1 cellspacing=0 id="tHead" class="table table-striped">
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="rel"></div>
+    <div id="demo" ></div>
+    <script>
+        $(window).on('scroll', function (e) {
+            var left = $(this).scrollLeft();
+            $('.fix .relative').css('left', -left);
+        });
+
+        (function ($) {
+            $.fn.hasScrollBar = function () {
+                return this.get(0).scrollHeight > this.get(0).clientHeight;
+            }
+        })(jQuery);
+
+        function myFunction() {
+            var table = prompt("Add HTML Format table");
+            var tableEle = new DOMParser().parseFromString(table, "text/html");
+            var tableCopy = new DOMParser().parseFromString(table, "text/html");
+            var x = tableCopy.querySelector("table");
+            x.classList.add('table');
+            x.classList.add('table-striped');
+            var tRow = tableEle.getElementsByTagName("tr");
+            var n = tRow.length;
+            document.getElementById("tableBody").appendChild(tRow[0]);
+            for (var i = 0; i < tRow.length; i++) {
+                var secRow = tRow[i];
+                secRow.style.visibility = "hidden";
+                secRow.classList.add('pushBack');
+                document.getElementById("tableBody").appendChild(secRow);
+            }
+            if (x != null) {
+                document.getElementById("demo").appendChild(x);
+                document.getElementById("button").style.display = "none";
+            }
+            console.log( $(document).height() < $(window).height());
+            if( $(document).height() < $(window).height()){
+                document.getElementById("tableBody").style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
