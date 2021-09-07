@@ -81,7 +81,7 @@
         })(jQuery);
 
         function noStickyHeader(){
-            var table = prompt("Add HTML Format table no stick");
+            var table = prompt("Add HTML Format table");
             var tableCopy = new DOMParser().parseFromString(table, "text/html");
             var x = tableCopy.querySelector("table");
             x.classList.add('table');
